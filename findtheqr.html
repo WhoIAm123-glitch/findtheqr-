@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find The QR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            background: #000;
+            color: #fff;
+        }
+
+        /* Infinite scroll trick */
+        .infinite-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
+            animation: gradientShift 10s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460); }
+            50% { background: linear-gradient(45deg, #16213e, #0f3460, #1a1a2e); }
+        }
+
+        /* Parallax layers */
+        .parallax-layer {
+            position: fixed;
+            width: 100%;
+            height: 200vh;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .layer1 { background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 50px 50px; }
+        .layer2 { background: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 100px 100px; }
+
+        /* Repeating pattern sections */
+        .pattern-section {
+            min-height: 150vh;
+            padding: 100px 20px;
+            background: repeating-linear-gradient(
+                0deg,
+                #0a0a0a 0px,
+                #0a0a0a 50px,
+                #1a1a1a 50px,
+                #1a1a1a 100px
+            );
+            position: relative;
+        }
+
+        /* Spiral effect */
+        .spiral-container {
+            height: 200vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spiral {
+            width: 500px;
+            height: 500px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            animation: spin 20s linear infinite;
+            position: absolute;
+        }
+
+        .spiral:nth-child(2) { width: 400px; height: 400px; animation-duration: 15s; animation-direction: reverse; }
+        .spiral:nth-child(3) { width: 300px; height: 300px; animation-duration: 10s; }
+        .spiral:nth-child(4) { width: 200px; height: 200px; animation-duration: 5s; animation-direction: reverse; }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Text scroll effect */
+        .text-scroll {
+            height: 300vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            padding: 50px;
+            background: linear-gradient(180deg, #000, #1a1a2e, #000);
+        }
+
+        .text-block {
+            font-size: 3rem;
+            text-align: center;
+            opacity: 0;
+            animation: fadeInOut 3s ease-in-out infinite;
+        }
+
+        .text-block:nth-child(1) { animation-delay: 0s; }
+        .text-block:nth-child(2) { animation-delay: 1s; }
+        .text-block:nth-child(3) { animation-delay: 2s; }
+        .text-block:nth-child(4) { animation-delay: 3s; }
+        .text-block:nth-child(5) { animation-delay: 4s; }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; transform: translateY(50px); }
+            50% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Matrix rain effect */
+        .matrix-section {
+            height: 200vh;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .matrix-char {
+            position: absolute;
+            color: #0f0;
+            font-family: monospace;
+            font-size: 20px;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        /* Zigzag pattern */
+        .zigzag-section {
+            height: 300vh;
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    #000 0px,
+                    #000 20px,
+                    #1a1a1a 20px,
+                    #1a1a1a 40px
+                );
+            position: relative;
+        }
+
+        /* Infinite loop section */
+        .loop-section {
+            height: 150vh;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .loop-text {
+            font-size: 4rem;
+            white-space: nowrap;
+            animation: loop 20s linear infinite;
+        }
+
+        @keyframes loop {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Grid pattern */
+        .grid-section {
+            min-height: 200vh;
+            background: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            padding: 100px;
+        }
+
+        .grid-item {
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.05);
+            margin: 20px;
+            display: inline-block;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        /* Wave section */
+        .wave-section {
+            height: 200vh;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wave {
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: waveMove 10s linear infinite;
+        }
+
+        @keyframes waveMove {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0%); }
+        }
+
+        /* QR Code Section */
+        .qr-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            padding: 50px;
+        }
+
+        .qr-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            text-align: center;
+            animation: qrPulse 2s ease-in-out infinite;
+        }
+
+        .qr-container img {
+            width: 400px;
+            height: 400px;
+            display: block;
+            margin: 0 auto 20px;
+        }
+
+        .qr-container p {
+            color: #333;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        @keyframes qrPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Floating elements */
+        .float-section {
+            height: 200vh;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .float {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            animation: float 10s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-100px) translateX(50px); }
+            50% { transform: translateY(-200px) translateX(0); }
+            75% { transform: translateY(-100px) translateX(-50px); }
+        }
+
+        /* Countdown section */
+        .countdown-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            font-size: 8rem;
+        }
+
+        /* Long text section */
+        .long-text-section {
+            min-height: 500vh;
+            padding: 100px;
+            background: repeating-linear-gradient(
+                90deg,
+                #0a0a0a,
+                #0a0a0a 100px,
+                #1a1a1a 100px,
+                #1a1a1a 200px
+            );
+            font-size: 2rem;
+            line-height: 3;
+            text-align: justify;
+        }
+
+        h1 {
+            font-size: 5rem;
+            text-align: center;
+            margin: 50px 0;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+
+        h2 {
+            font-size: 3rem;
+            text-align: center;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Parallax layers -->
+    <div class="parallax-layer layer1"></div>
+    <div class="parallax-layer layer2"></div>
+
+    <!-- Section 1: Welcome -->
+    <section class="infinite-section">
+        <h1>Welcome to the Infinite Journey</h1>
+    </section>
+
+    <!-- Section 2: Pattern -->
+    <section class="pattern-section">
+        <h2>Keep Scrolling...</h2>
+    </section>
+
+    <!-- Section 3: Spiral -->
+    <section class="spiral-container">
+        <div class="spiral"></div>
+        <div class="spiral"></div>
+        <div class="spiral"></div>
+        <div class="spiral"></div>
+        <h2 style="z-index: 10; position: relative;">The Journey Continues...</h2>
+    </section>
+
+    <!-- Section 4: Text Scroll -->
+    <section class="text-scroll">
+        <div class="text-block">You're getting closer...</div>
+        <div class="text-block">But not quite there yet...</div>
+        <div class="text-block">Keep going...</div>
+        <div class="text-block">The QR awaits...</div>
+        <div class="text-block">Just a bit more...</div>
+    </section>
+
+    <!-- Section 5: Matrix -->
+    <section class="matrix-section" id="matrix"></section>
+
+    <!-- Section 6: Zigzag -->
+    <section class="zigzag-section">
+        <h1 style="padding-top: 100px;">Still Going...</h1>
+    </section>
+
+    <!-- Section 7: Loop -->
+    <section class="loop-section">
+        <div class="loop-text">Infinite Scroll • Infinite Scroll • Infinite Scroll • Infinite Scroll • Infinite Scroll •</div>
+    </section>
+
+    <!-- Section 8: Grid -->
+    <section class="grid-section">
+        <h1>Pattern After Pattern</h1>
+        <div style="text-align: center;">
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+        </div>
+    </section>
+
+    <!-- Section 9: Wave -->
+    <section class="wave-section">
+        <div class="wave"></div>
+        <div class="wave" style="animation-delay: -2s;"></div>
+        <div class="wave" style="animation-delay: -4s;"></div>
+        <h1 style="position: relative; z-index: 10; padding-top: 50vh; text-align: center;">Riding the Waves</h1>
+    </section>
+
+    <!-- Section 10: Float -->
+    <section class="float-section">
+        <div class="float" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="float" style="left: 20%; animation-delay: 1s;"></div>
+        <div class="float" style="left: 30%; animation-delay: 2s;"></div>
+        <div class="float" style="left: 40%; animation-delay: 3s;"></div>
+        <div class="float" style="left: 50%; animation-delay: 4s;"></div>
+        <div class="float" style="left: 60%; animation-delay: 5s;"></div>
+        <div class="float" style="left: 70%; animation-delay: 6s;"></div>
+        <div class="float" style="left: 80%; animation-delay: 7s;"></div>
+        <div class="float" style="left: 90%; animation-delay: 8s;"></div>
+        <h1 style="position: relative; z-index: 10; padding-top: 50vh; text-align: center;">Floating Through Space</h1>
+    </section>
+
+    <!-- Section 11: Long Text -->
+    <section class="long-text-section">
+        <h1>The Never-Ending Story</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.</p>
+        <p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.</p>
+        <p>Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+        <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
+        <p>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
+        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.</p>
+        <p>Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.</p>
+        <p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.</p>
+    </section>
+
+    <!-- Section 12: More Patterns -->
+    <section class="pattern-section">
+        <h1>Almost There...</h1>
+    </section>
+
+    <!-- Section 13: Another Spiral -->
+    <section class="spiral-container">
+        <div class="spiral"></div>
+        <div class="spiral"></div>
+        <div class="spiral"></div>
+        <h2 style="z-index: 10; position: relative;">The Final Stretch</h2>
+    </section>
+
+    <!-- Section 14: Countdown -->
+    <section class="countdown-section">
+        <div id="countdown">3... 2... 1...</div>
+    </section>
+
+    <!-- Section 15: QR Code -->
+    <section class="qr-section">
+        <div class="qr-container">
+            <img src="qr.png" alt="QR Code" id="qrCode" onclick="redirectToSite()">
+            <p>Scan or Click to Continue</p>
+        </div>
+    </section>
+
+    <!-- More infinite sections -->
+    <section class="infinite-section">
+        <h1>Or Keep Going...</h1>
+    </section>
+
+    <section class="pattern-section">
+        <h2>The Journey Never Ends</h2>
+    </section>
+
+    <section class="text-scroll">
+        <div class="text-block">You found it!</div>
+        <div class="text-block">But the scroll continues...</div>
+        <div class="text-block">Forever and ever...</div>
+    </section>
+
+    <script>
+        // Matrix rain effect
+        const matrixSection = document.getElementById('matrix');
+        const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+        
+        function createMatrix() {
+            for (let i = 0; i < 50; i++) {
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                char.style.animationDelay = Math.random() * 2 + 's';
+                matrixSection.appendChild(char);
+            }
+        }
+        createMatrix();
+
+        // Parallax effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const layers = document.querySelectorAll('.parallax-layer');
+            layers.forEach((layer, index) => {
+                const speed = (index + 1) * 0.5;
+                layer.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+
+        // Infinite scroll trick - duplicate content
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop && scrollTop > document.body.scrollHeight - window.innerHeight - 1000) {
+                // Add more content when near bottom
+                const body = document.body;
+                const newSection = document.createElement('section');
+                newSection.className = 'infinite-section';
+                newSection.innerHTML = '<h1>Still Infinite...</h1>';
+                body.appendChild(newSection);
+            }
+            lastScrollTop = scrollTop;
+        });
+
+        // Countdown animation
+        const countdown = document.getElementById('countdown');
+        let count = 3;
+        const countdownInterval = setInterval(() => {
+            countdown.textContent = count + '...';
+            count--;
+            if (count < 0) {
+                clearInterval(countdownInterval);
+                countdown.textContent = 'Here it is!';
+            }
+        }, 1000);
+
+        // QR Code redirect function
+        function redirectToSite() {
+            // Change this URL to your desired destination
+            window.location.href = 'https://example.com';
+        }
+
+        // Auto-scroll trick (optional, can be disabled)
+        // Uncomment to enable auto-scrolling
+        /*
+        let autoScroll = true;
+        setInterval(() => {
+            if (autoScroll) {
+                window.scrollBy(0, 1);
+            }
+        }, 50);
+        */
+    </script>
+</body>
+</html>
